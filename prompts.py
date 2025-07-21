@@ -9,5 +9,5 @@ data = {
     "temperature": 0.7
 }
 
-res = requests.post("http://localhost:8000/generate", json=data)
+res = requests.post("http://localhost:8001/chat", json=data)
 print(res.json())
