@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
 from vllm import LLM, SamplingParams
+import os
 
 app = FastAPI()
-model = LLM(model="openai-community/gpt2", device="cpu")
+
+gpu_id = os.getenv("GPU_ID", "0")
+model = LLM(model="google/gemma-3-27b-it", gpu_memory_utilization=0.9, tensor_parallel_size=2)
 
 class PromptMessage(BaseModel):
     role: str
@@ -11,8 +14,8 @@ class PromptMessage(BaseModel):
 
 class GenerateRequest(BaseModel):
     messages: list[PromptMessage]
-    max_tokens: int = 200
-    temperature: float = 0.7
+    max_tokens: int = 10
+    temperature: float = 0.5
 
 @app.post("/chat")
 async def generate_text(request: GenerateRequest):
